@@ -21,13 +21,19 @@ require_once(__DIR__ . '/../../stack/potentialresponsetreestate.class.php');
 
 
 // Expected in create_maximalocal() for some reason, but not actually needed?
-function make_upload_directory() {}
+//function make_upload_directory() {}
+
+//function set_config($key, $value, $plugin) {
+//    global $CFG;
+//    $CFG->$key = $value;
+//}
 
 // needed only once
-stack_cas_configuration::create_maximalocal();
+//stack_cas_configuration::create_maximalocal();
+//stack_cas_configuration::create_auto_maxima_image();
 
-$options = new stack_options();
-$el = stack_input_factory::make('algebraic', 'sans1', "");
+$options = new stack_options();  // Maybe useful for tweaking parser
+$el = stack_input_factory::make('algebraic', 'sans1', "");  // There are some extra arguments here, maybe useful for tweaking parser
 
 $expression = file_get_contents("expression.txt");
 $state = $el->validate_student_response(['sans1' => $expression], $options, '', new stack_cas_security());
