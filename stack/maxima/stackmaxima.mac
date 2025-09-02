@@ -680,8 +680,36 @@ _CS2v(_k,_v) := block([%_tmp],
  %_tmp:[[_k, string(_v)]],
  if listp(%_tmp) then _VALUES:append(_VALUES,%_tmp),
  0)$
+ /* Convert Maxima expression to JSON representation */
+ expr_to_json(expr) := block(
+   [result],
+
+   /* Handle atoms first */
+   if atom(expr) then (
+     if numberp(expr) then (
+       if integerp(expr) then
+         result: ["integer", string(expr)]
+       else
+         result: ["float", string(expr)]
+     ) else if symbolp(expr) then (
+       result: ["symbol", string(expr)]
+     ) else (
+       result: ["atom", string(expr)]
+     )
+   ) else (
+     /* Handle compound expressions */
+     result: ["operation", expr_to_json(op(expr))],
+
+     /* Process arguments */
+     processed_args: map(expr_to_json, args(expr)),
+     result: append(result, processed_args)
+   ),
+
+   result
+ )$
+/* Patching _CS2l so that it returns a JSON-ish tree structure instead of LaTeX */
 _CS2l(_k,_v) := block([%_tmp],
- %_tmp:[[_k, stack_disp(_v, "")]],
+ %_tmp:[[_k, string(expr_to_json(_v))]],
  if listp(%_tmp) then _LATEX:append(_LATEX,%_tmp),
  0)$
 _CS2dv(_k,_v) := block([%_tmp, simp],
