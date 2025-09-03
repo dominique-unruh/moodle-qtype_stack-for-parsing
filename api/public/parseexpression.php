@@ -48,7 +48,7 @@ $options = $question->options;
 $state = $input->validate_student_response(['ans1' => $expression], $options, '', new stack_cas_security());
 print_r($state);
 if ($state->errors)
-    file_put_contents("$workdir/errors.txt", implode(', ', $state->errors));
+    file_put_contents("$workdir/errors.txt", $state->errors);
 file_put_contents("$workdir/result.txt", $state->contentsdisplayed);
 
 echo("Done");
