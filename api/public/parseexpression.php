@@ -35,7 +35,7 @@ require_once(__DIR__ . '/../../stack/potentialresponsetreestate.class.php');
 $options = new stack_options();  // Maybe useful for tweaking parser
 $el = stack_input_factory::make('algebraic', 'sans1', "");  // There are some extra arguments here, maybe useful for tweaking parser
 
-$expression = file_get_contents("expression.txt");
+$expression = file_get_contents("/workdir/expression.txt");
 $state = $el->validate_student_response(['sans1' => $expression], $options, '', new stack_cas_security());
 print_r($state);
-file_put_contents("result.txt", $state->contentsdisplayed);
+file_put_contents("/workdir/result.txt", $state->contentsdisplayed);
