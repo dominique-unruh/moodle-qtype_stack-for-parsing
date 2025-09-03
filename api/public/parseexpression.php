@@ -50,5 +50,6 @@ print_r($state);
 if (!empty($state->errors))
     file_put_contents("$workdir/errors.txt", $state->errors);
 file_put_contents("$workdir/result.txt", $state->contentsdisplayed);
+file_put_contents("$workdir/errors.txt", $state->errors);
 
 echo("Done");
