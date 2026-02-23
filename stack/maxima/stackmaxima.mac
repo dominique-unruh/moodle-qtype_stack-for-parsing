@@ -138,7 +138,8 @@ load("stack_logic.lisp");
 load("Ksimplifier.lisp");
 
 /* We don't want to allow people to put boxes round things. */
-box(ex) := ex;
+/* box(ex) := ex; */ /* MAXIMA added box in recent version as a builtin. Removing this as a hotfix till upstream-stack catches up. */
+
 
 /* Although this works well in MAXIMA, |'s are not allowed in STACK */
 /* The heuristics to catch the various errors do not work, since | is symmetrical */
