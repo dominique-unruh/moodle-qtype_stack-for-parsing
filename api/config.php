@@ -75,8 +75,8 @@ $CFG->inputmustverify = 1;
 $CFG->inputshowvalidation = 1;
 
 // These should match the version of goemaxima in docker-compose.
-$CFG->stackmaximaversion = "2025073100";
-$CFG->version = "2025073100";
+$CFG->stackmaximaversion = "2026010500";
+$CFG->version = "2026010500";
 
 // Do not change this setting.
 $CFG->mathsdisplay = 'api';
@@ -84,4 +84,4 @@ $CFG->mathsdisplay = 'api';
 $CFG->libdir = $CFG->dirroot . '/emulation/libdir';
 
 // MathJax URL.
-$CFG->httpsurl = 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+$CFG->httpsurl = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js?config=TeX-AMS-MML_HTMLorMML';

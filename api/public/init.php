@@ -17,5 +17,9 @@ $expression = "x";
 $state = $el->validate_student_response(['sans1' => $expression], $options, '', new stack_cas_security());
 print_r($state->status);
 if ($state->status != "valid") {
+//    print($state->debug);
+    /** @noinspection PhpUndefinedVariableInspection */
+    print($debuginfo);
+    print("\n");
     throw new Exception("not valid");
 }

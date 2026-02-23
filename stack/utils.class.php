@@ -47,6 +47,8 @@ interface stack_debug_log {
     public function log($heading = '', $message = '');
 }
 
+// Made this global so that debug info doesn't get lost.
+$debuginfo = '';
 
 /**
  * Interface for a class that stores debug information (or not).
@@ -56,15 +58,13 @@ interface stack_debug_log {
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class stack_debug_log_base implements stack_debug_log {
-    // phpcs:ignore moodle.Commenting.VariableComment.Missing
-    protected $debuginfo = '';
-
     /**
      * Add description here.
      * @return string the contents of the log.
      */
     public function get_log() {
-        return $this->debuginfo;
+        global $debuginfo;
+        return $debuginfo;
     }
 
     /**
@@ -73,11 +73,12 @@ class stack_debug_log_base implements stack_debug_log {
      * @param string $message the debug message.
      */
     public function log($heading = '', $message = '') {
+        global $debuginfo;
         if ($heading) {
-            $this->debuginfo .= html_writer::tag('h3', $heading);
+            $debuginfo .= html_writer::tag('h3', $heading);
         }
         if ($message) {
-            $this->debuginfo .= html_writer::tag('pre', s($message));
+            $debuginfo .= html_writer::tag('pre', s($message));
         }
     }
 }
