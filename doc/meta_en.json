@@ -431,6 +431,11 @@
                 "description":"Information on creating and manipulating multiple choice questions in STACK."
                 },
                 {
+                "file":"Multiple_choice_plots.md",
+                "title":"Multiple choice plots - STACK Documentation",
+                "description":"Information on adding plots to multiple choice questions in STACK."
+                },
+                {
                 "file":"Multiline_input.md",
                 "title":"Multiline inputs - STACK Documentation",
                 "description":"Reference documentation on input types allowing multiline input STACK."
@@ -488,6 +493,11 @@
                 "file":"Fact_sheets.md",
                 "title":"Fact Sheets - STACK Documentation",
                 "description":"STACK lets question authors easily embed standard facts into their questions."
+                },
+                {
+                "file":"Iframe_blocks.md",
+                "title":"Iframe blocks - STACK Documentation",
+                "description":"Some content needs to be embedded into iframes."
                 },
                 {
                 "file":"Static_blocks.md",
@@ -764,11 +774,6 @@
         "description":"How to tidy up PRT node names with STACK's tidy tool."
         },
         {
-        "file":"UpgradeDefaults.md",
-        "title":"Upgrading Question Details - STACK Documentation",
-        "description":"Information on upgrading question defaults. This may be necessary if you have recently upgraded from an old version of STACK."
-        },
-        {
         "file":"Authoring_workflow.md",
         "title":"Workflow - STACK Documentation",
         "description":"Suggestions for effective question authoring workflow, especially when working collaboratively."
@@ -778,12 +783,17 @@
         {
         "file":"index.md",
         "title":"STACK question library - STACK Documentation",
-        "description":"Reference documentation on the libraries in STACK for representing ordinary differential equations."
+        "description":"Reference documentation on the STACK question library."
         },
         {
         "file":"Algebra_refresher.md",
         "title":"Algebra refresher question library - STACK Documentation",
-        "description":"Reference documentation on the libraries in STACK for representing ordinary differential equations."
+        "description":"Reference documentation on the Algebra Refresher STACK question library."
+        },
+        {
+        "file":"HELM.md",
+        "title":"HELM question library - STACK Documentation",
+        "description":"Reference documentation on the HELM STACK question library."
         }
         ]
         }
@@ -1073,6 +1083,15 @@
         "description":"This page provides advice for writing STACK questions in vector calculus."
         },
         {
+        "Chemistry":[
+            {
+            "file":"index.md",
+            "title":"Support for chemistry in STACK - STACK Documentation",
+            "description":"How to write questions for chemistry with STACK."
+            }
+            ]
+        },
+        {
         "Linear_algebra":[
              {
              "file":"index.md",
@@ -1255,6 +1274,11 @@
             "description":"Reference documentation for the equivalence reasoning input."
             },
             {
+            "file":"Equivalence_reasoning.md",
+            "title":"Mathematics of Equivalence reasoning - STACK Documentation",
+            "description":"Document the mathematics behind quivalence reasoning."
+            },
+            {
             "file":"Equivalence_assessment.md",
             "title":"Equivalence reasoning assessment - STACK Documentation",
             "description":"Reference documentation for the equivalence reasoning answer tests."
@@ -1323,6 +1347,18 @@
             "description":"Reference documentation for the JSXGraph question block."
             }
             ]
+        },
+        {
+       "STACK-JS":[
+         {"file":"index.md",
+          "title":"STACK-JS: STACK <-> VLE JavaScript interface - STACK Documentation",
+          "description":"This section describes tools for writing future-proof, portable and safe JavaScript features using the JavaScript system within STACK."
+         },
+         {"file":"Validation_state_listener.md",
+          "title":"STACK-JS a cautionary example on using validation messages for data transfer - STACK Documentation",
+          "description":"This page describes a combination of multiple advanced features used together in a way that may prove to be slow."
+         }
+        ]
         }
       ]
       }

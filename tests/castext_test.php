@@ -1013,7 +1013,7 @@ final class castext_test extends qtype_stack_testcase {
      */
     public function test_disp_mult_space(): void {
 
-        $a2 = ['make_multsgn("space")', 'b:x*y'];
+        $a2 = ['make_multsgn("space")', 'b:x*y', 'c:apply("nounmul", [x,y])'];
         $s2 = [];
         foreach ($a2 as $s) {
             $s2[] = stack_ast_container::make_from_teacher_source($s, '', new stack_cas_security(), []);
@@ -1021,12 +1021,12 @@ final class castext_test extends qtype_stack_testcase {
         $cs2 = new stack_cas_session2($s2, null, 0);
         $this->assertTrue($cs2->get_valid());
 
-        $at1 = castext2_evaluatable::make_from_source('{@b@}', 'test-case');
+        $at1 = castext2_evaluatable::make_from_source('{@b@}, {@c@}', 'test-case');
         $this->assertTrue($at1->get_valid());
         $cs2->add_statement($at1);
         $cs2->instantiate();
 
-        $this->assertEquals('\({x\,y}\)', $at1->get_rendered());
+        $this->assertEquals('\({x\,y}\), \({x\,y}\)', $at1->get_rendered());
     }
 
     /**
@@ -1057,7 +1057,7 @@ final class castext_test extends qtype_stack_testcase {
      */
     public function test_disp_mult_dot(): void {
 
-        $a2 = ['make_multsgn("dot")', 'b:x*y'];
+        $a2 = ['make_multsgn("dot")', 'b:x*y', 'c:apply("nounmul", [x,y])'];
         $s2 = [];
         foreach ($a2 as $s) {
             $s2[] = stack_ast_container::make_from_teacher_source($s, '', new stack_cas_security(), []);
@@ -1065,12 +1065,12 @@ final class castext_test extends qtype_stack_testcase {
         $cs2 = new stack_cas_session2($s2, null, 0);
         $this->assertTrue($cs2->get_valid());
 
-        $at1 = castext2_evaluatable::make_from_source('{@b@}', 'test-case');
+        $at1 = castext2_evaluatable::make_from_source('{@b@}, {@c@}', 'test-case');
         $this->assertTrue($at1->get_valid());
         $cs2->add_statement($at1);
         $cs2->instantiate();
 
-        $this->assertEquals('\({x\cdot y}\)', $at1->get_rendered());
+        $this->assertEquals('\({x\cdot y}\), \({x\cdot y}\)', $at1->get_rendered());
     }
 
     /**
@@ -1079,7 +1079,7 @@ final class castext_test extends qtype_stack_testcase {
      */
     public function test_disp_mult_cross(): void {
 
-        $a2 = ['make_multsgn("cross")', 'b:x*y'];
+        $a2 = ['make_multsgn("cross")', 'b:x*y', 'c:apply("nounmul", [x,y])'];
         $s2 = [];
         foreach ($a2 as $s) {
             $s2[] = stack_ast_container::make_from_teacher_source($s, '', new stack_cas_security(), []);
@@ -1087,12 +1087,12 @@ final class castext_test extends qtype_stack_testcase {
         $cs2 = new stack_cas_session2($s2, null, 0);
         $this->assertTrue($cs2->get_valid());
 
-        $at1 = castext2_evaluatable::make_from_source('{@b@}', 'test-case');
+        $at1 = castext2_evaluatable::make_from_source('{@b@}, {@c@}', 'test-case');
         $this->assertTrue($at1->get_valid());
         $cs2->add_statement($at1);
         $cs2->instantiate();
 
-        $this->assertEquals('\({x\times y}\)', $at1->get_rendered());
+        $this->assertEquals('\({x\times y}\), \({x\times y}\)', $at1->get_rendered());
     }
 
     /**
@@ -1101,7 +1101,7 @@ final class castext_test extends qtype_stack_testcase {
      */
     public function test_disp_mult_switch(): void {
 
-        $a2 = ['make_multsgn("dot")'];
+        $a2 = ['make_multsgn("dot")', 'c:apply("nounmul", [a,b])'];
         $s2 = [];
         foreach ($a2 as $s) {
             $s2[] = stack_ast_container::make_from_teacher_source($s, '', new stack_cas_security(), []);
@@ -1109,13 +1109,14 @@ final class castext_test extends qtype_stack_testcase {
         $cs2 = new stack_cas_session2($s2, null, 0);
         $this->assertTrue($cs2->get_valid());
 
-        $at1 = castext2_evaluatable::make_from_source('Default: {@a*b@}. Switch: {@(make_multsgn("cross"), a*b)@}. ' .
-                'Cross remains: {@a*b@}.', 'test-case');
+        $at1 = castext2_evaluatable::make_from_source('Default: {@a*b@}, {@c@}. Switch: {@(make_multsgn("cross"), a*b)@}. ' .
+                'Cross remains: {@a*b@}, {@c@}.', 'test-case');
         $this->assertTrue($at1->get_valid());
         $cs2->add_statement($at1);
         $cs2->instantiate();
 
-        $this->assertEquals('Default: \({a\cdot b}\). Switch: \({a\times b}\). Cross remains: \({a\times b}\).',
+        $this->assertEquals('Default: \({a\cdot b}\), \({a\cdot b}\). ' .
+            'Switch: \({a\times b}\). Cross remains: \({a\times b}\), \({a\times b}\).',
                 $at1->get_rendered());
     }
 
@@ -1125,7 +1126,7 @@ final class castext_test extends qtype_stack_testcase {
      */
     public function test_disp_equiv_natural_domain(): void {
 
-        $a2 = ['ta:[1/(x-1)+1/(x+1),2*x/(x^2-1)]'];
+        $a2 = ['ta:[1/(x-1)+1/(x+1)=0,2*x/(x^2-1)=0]'];
         $s2 = [];
         foreach ($a2 as $s) {
             $s2[] = stack_ast_container::make_from_teacher_source($s, '', new stack_cas_security(), []);
@@ -1140,15 +1141,15 @@ final class castext_test extends qtype_stack_testcase {
         $cs2->add_statement($at1);
         $cs2->instantiate();
 
-        $this->assertEquals('\[ {\begin{array}{lll} &\frac{1}{x+1}+\frac{1}{x-1}&' .
+        $this->assertEquals('\[ {\begin{array}{lll} &\frac{1}{x+1}+\frac{1}{x-1}=0&' .
             '{\color{blue}{{x \not\in {\left \{-1 , 1 \right \}}}}}\cr \color{green}' .
-            '{\Leftrightarrow}&\frac{2\cdot x}{x^2-1}&{\color{blue}{{x \not\in {\left \{-1 , 1 \right \}}}}}' .
-            '\cr \end{array}} \] \[ {\begin{array}{lll}\frac{1}{x+1}+\frac{1}{x-1}&' .
-            '{\color{blue}{{x \not\in {\left \{-1 , 1 \right \}}}}}\cr \frac{2\cdot x}{x^2-1}&{\color{blue}' .
+            '{\Leftrightarrow}&\frac{2\cdot x}{x^2-1}=0&{\color{blue}{{x \not\in {\left \{-1 , 1 \right \}}}}}' .
+            '\cr \end{array}} \] \[ {\begin{array}{lll}\frac{1}{x+1}+\frac{1}{x-1}=0&' .
+            '{\color{blue}{{x \not\in {\left \{-1 , 1 \right \}}}}}\cr \frac{2\cdot x}{x^2-1}=0&{\color{blue}' .
             '{{x \not\in {\left \{-1 , 1 \right \}}}}}\cr \end{array}} \] ' .
-            '\[ {\begin{array}{lll} &\frac{1}{x+1}+\frac{1}{x-1}& \cr \color{green}{\Leftrightarrow}&' .
-            '\frac{2\cdot x}{x^2-1}& \cr \end{array}} \] ' .
-            '\[ {\begin{array}{lll}\frac{1}{x+1}+\frac{1}{x-1}& \cr \frac{2\cdot x}{x^2-1}& \cr \end{array}} \]',
+            '\[ {\begin{array}{lll} &\frac{1}{x+1}+\frac{1}{x-1}=0& \cr \color{green}{\Leftrightarrow}&' .
+            '\frac{2\cdot x}{x^2-1}=0& \cr \end{array}} \] ' .
+            '\[ {\begin{array}{lll}\frac{1}{x+1}+\frac{1}{x-1}=0& \cr \frac{2\cdot x}{x^2-1}=0& \cr \end{array}} \]',
             $at1->get_rendered());
     }
 
@@ -3010,6 +3011,154 @@ final class castext_test extends qtype_stack_testcase {
         $raw = '{@expand((x+y)^3)@}, {@(declare(x,mainvar),expand((x+y)^3))@}';
         $exp = '\({y^3+3\cdot x\cdot y^2+3\cdot x^2\cdot y+x^3}\), ' .
                '\({x^3+3\cdot y\cdot x^2+3\cdot y^2\cdot x+y^3}\)';
+        $at1 = castext2_evaluatable::make_from_source($raw, 'test-case');
+        $this->assertTrue($at1->get_valid());
+        $cs2->add_statement($at1);
+        $cs2->instantiate();
+        $this->assertEquals($exp, $at1->get_rendered());
+    }
+
+    /**
+     * Basic test of chemistry functionality.
+     * @covers \qtype_stack\stack_cas_castext2_latex
+     * @covers \qtype_stack\stack_cas_keyval
+     */
+    public function test_include_chemistry(): void {
+
+        $options = new stack_options();
+
+        $vars = 'stack_include("contribl://chemistry.mac");';
+        $at1 = new stack_cas_keyval($vars, $options, 123);
+        $this->assertTrue($at1->get_valid());
+
+        $cs2 = $at1->get_session();
+        $at2 = castext2_evaluatable::make_from_source('{@chem_data("H", "Name")@}, ' .
+            '{@chem_data("H", "AtomicMass")@}, {@chem_data("H", "ElectronConfiguration")@}, ' .
+            'and {@chem_data("H", "YearDiscovered")@}.', 'test-case');
+        $this->assertTrue($at2->get_valid());
+        $cs2->add_statement($at2);
+        $cs2->instantiate();
+
+        $this->assertEquals('Hydrogen, \({1.008}\), 1s1, and \({1766}\).',
+            $at2->get_rendered());
+    }
+
+    /**
+     * Tests the implode functions.
+     * @covers \qtype_stack\stack_cas_castext2_latex
+     * @covers \qtype_stack\stack_cas_keyval
+     */
+    public function test_stack_implode(): void {
+        $a2 = ['L1:[a,b,c^2]'];
+        $s2 = [];
+        foreach ($a2 as $s) {
+            $cs = stack_ast_container::make_from_teacher_source($s, '', new stack_cas_security(), []);
+            $this->assertTrue($cs->get_valid());
+            $s2[] = $cs;
+        }
+        $options = new stack_options();
+        $options->set_option('simplify', true);
+        $cs2 = new stack_cas_session2($s2, $options, 0);
+        $raw = "\[ [[define _first='true'/]][[foreach ex='L1']]" .
+            "[[if test='not _first']] + [[else]][[define _first='false'/]][[/if]]" .
+            "{@ex@}[[/foreach]] \]";
+        $exp = '\[ {a} + {b} + {c^2} \]';
+        $at1 = castext2_evaluatable::make_from_source($raw, 'test-case');
+        $this->assertTrue($at1->get_valid());
+        $cs2->add_statement($at1);
+        $cs2->instantiate();
+        $this->assertEquals($exp, $at1->get_rendered());
+    }
+
+    /**
+     * Tests the unary_minus_sort functions.
+     * @covers \qtype_stack\stack_cas_castext2_latex
+     * @covers \qtype_stack\stack_cas_keyval
+     */
+    public function test_unary_minus_sort(): void {
+        $a2 = ['p0:a-(-4*a+b)', 'p1:unary_minus_sort(p0)'];
+        $s2 = [];
+        foreach ($a2 as $s) {
+            $cs = stack_ast_container::make_from_teacher_source($s, '', new stack_cas_security(), []);
+            $this->assertTrue($cs->get_valid());
+            $s2[] = $cs;
+        }
+        $options = new stack_options();
+        $options->set_option('simplify', false);
+        $cs2 = new stack_cas_session2($s2, $options, 0);
+        $raw = "{#p0#}, {#p1#}. {#(mminusbp101(true),p0)#}, {#(mminusbp101(true),p1)#}.";
+        // It's the last of these which was expected.
+        $exp = 'a-(-4*a+b), a-(-(4*a)+b). a-((-4)*a+b), a-(-4*a+b).';
+        $at1 = castext2_evaluatable::make_from_source($raw, 'test-case');
+        $this->assertTrue($at1->get_valid());
+        $cs2->add_statement($at1);
+        $cs2->instantiate();
+        $this->assertEquals($exp, $at1->get_rendered());
+
+        // This example combines pre-fix in the first term, and has the problematic multi-terms in addition.
+        $a2 = ['p0:-7*y^3-2*y^2-8*y', 'p1:unary_minus_sort(p0)'];
+        $s2 = [];
+        foreach ($a2 as $s) {
+            $cs = stack_ast_container::make_from_teacher_source($s, '', new stack_cas_security(), []);
+            $this->assertTrue($cs->get_valid());
+            $s2[] = $cs;
+        }
+        $options = new stack_options();
+        $options->set_option('simplify', false);
+        $cs2 = new stack_cas_session2($s2, $options, 0);
+        $raw = "{#p0#}, {#p1#}. {#(mminusbp101(true),p0)#}, {#(mminusbp101(true),p1)#}.";
+        // It's the last of these which was expected.
+        $exp = '-7*y^3-2*y^2+(-8)*y, -(7*y^3)-2*y^2-8*y. (-7)*y^3-2*y^2+(-8)*y, -7*y^3-2*y^2-8*y.';
+        $at1 = castext2_evaluatable::make_from_source($raw, 'test-case');
+        $this->assertTrue($at1->get_valid());
+        $cs2->add_statement($at1);
+        $cs2->instantiate();
+        $this->assertEquals($exp, $at1->get_rendered());
+    }
+
+    /**
+     * Tests the disp_parens display functions.
+     * @covers \qtype_stack\stack_cas_castext2_latex
+     * @covers \qtype_stack\stack_cas_keyval
+     */
+    public function test_stack_disp_parens(): void {
+        // This is the example which needs brackets.
+        $a2 = ['p1:disp_parens(a+b)+c'];
+        $s2 = [];
+        foreach ($a2 as $s) {
+            $cs = stack_ast_container::make_from_teacher_source($s, '', new stack_cas_security(), []);
+            $this->assertTrue($cs->get_valid());
+            $s2[] = $cs;
+        }
+        $options = new stack_options();
+        $options->set_option('simplify', true);
+        $cs2 = new stack_cas_session2($s2, $options, 0);
+        $raw = "{@p1@}, {#p1#}, {@disp_parens(A+B)+C@}, {#disp_parens(A+B)+C#}.";
+        $exp = '\({c+\left( b+a \right)}\), c+(b+a), \({C+\left( B+A \right)}\), C+(B+A).';
+        $at1 = castext2_evaluatable::make_from_source($raw, 'test-case');
+        $this->assertTrue($at1->get_valid());
+        $cs2->add_statement($at1);
+        $cs2->instantiate();
+        $this->assertEquals($exp, $at1->get_rendered());
+    }
+
+    /**
+     * Systematic regex tests at thecastext level, issue #1623.
+     * @covers \qtype_stack\stack_cas_castext2_latex
+     * @covers \qtype_stack\stack_cas_keyval
+     */
+    public function test_stack_regex(): void {
+        $options = new stack_options();
+        $options->set_option('simplify', true);
+        $cs2 = new stack_cas_session2([], $options, 0);
+        $raw = '{@regex_match("[1][.]?[0]", "1.0")@}, {@regex_match("[-][1][.]?[0]", "-1.0")@}, ' .
+               '{@regex_match("[-]?[1][.]?[0]", "1.0")@}, {@regex_match("-?[1][.]?[0]", "1.0")@}, ' .
+               '{@regex_match("[\\-]?[1][.]?[0]", "1.0")@}, {@regex_match("[-+]?[1][.]?[0]", "1.0")@}, ' .
+               '{@regex_match("[+-]?[1][.]?[0]", "1.0")@}, {@regex_match("a?", "a")@}.';
+        $exp = '\({\left[ \text{1.0} \right]}\), \({\left[ \text{-1.0} \right]}\), ' .
+               '\({\left[ \text{1.0} \right]}\), \({\left[ \text{1.0} \right]}\), ' .
+               '\({\left[ \text{1.0} \right]}\), \({\left[ \text{1.0} \right]}\), ' .
+               '\({\left[ \text{1.0} \right]}\), \({\left[ \text{a} \right]}\).';
         $at1 = castext2_evaluatable::make_from_source($raw, 'test-case');
         $this->assertTrue($at1->get_valid());
         $cs2->add_statement($at1);

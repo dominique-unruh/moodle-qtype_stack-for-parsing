@@ -2,4 +2,6 @@ site/*
 
 # Ignore macOS .DS_Store files
 .DS_Store 
-/.idea/
+
+# Ignore eclipse project files
+.project

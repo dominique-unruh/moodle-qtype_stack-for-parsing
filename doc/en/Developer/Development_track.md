@@ -5,17 +5,21 @@ past development history is documented on [Development history](Development_hist
 
 We use the [github issue tracker](https://github.com/maths/moodle-qtype_stack/issues) to track "milestones".
 
-## Version 4.11.0
+## Version 4.12.0
 
-Issues with [github milestone 4.11.0](https://github.com/maths/moodle-qtype_stack/issues?q=is%3Aissue+milestone%3A4.11.0) include
+Issues with [github milestone 4.12.0](https://github.com/maths/moodle-qtype_stack/issues?q=is%3Aissue+milestone%3A4.12.0) include
 
 1. Fix [issue #406](https://github.com/maths/moodle-qtype_stack/issues/406)
 2. Remove all "cte" code from Maxima - mostly install.
-3. Resolve [issue #1363] to download students data in json format.
 
 ## Future Adapt block development ideas
 
 1. Add in a "counter" option to the button.  If set to true, then the value of the counter changes from true/false to the number of times the button has been pressed.
+
+## Future equivalence reasoning development track.
+
+1. Allow bespoke validation (actually quite difficult).
+2. Specify a variable to solve for.  E.g.  `a*x=0`, currently needs `a=0 or x=0`, but when solving for `x` we have just `x=0`.
 
 ## Future Parson's block development track
 
@@ -34,7 +38,7 @@ Issues with [github milestone 4.11.0](https://github.com/maths/moodle-qtype_stac
 
 ## For "inputs 2"?
 
-* Better CSS, including "tool tips".  May need to refactor JavaScript.  (See issue #380)
+* Better CSS, including "tool tips".  May need to re-factor JavaScript.  (See issue #380)
 * Add support for matrices with floating point entries, and testing numerical accuracy.
 * Expand support for input validation options to matrices (e.g. floatnum, rationalize etc.)
 * Update MCQ to accept units.
@@ -43,4 +47,4 @@ Issues with [github milestone 4.11.0](https://github.com/maths/moodle-qtype_stac
 
 ## Other
 
-* SBCL on the continuous integration does not seem to have support for unicode.  There are examples in the inputs fixtures and walkthrough adapctive tests.  Search for SBCL.
+* SBCL on the continuous integration does not seem to have support for unicode.  There are examples in the inputs fixtures and walkthrough adaptive tests.  Search for SBCL.
