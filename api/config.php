@@ -35,7 +35,7 @@ $CFG->platform            = 'linux';
 $CFG->maximalocalfolder = $CFG->dataroot . 'maxima/';
 
 // Type (int).
-$CFG->castimeout = 10;
+$CFG->castimeout = 20;
 $CFG->casdebugging = 1;
 $CFG->casresultscache = 'none';
 $CFG->maximalibraries = '';
