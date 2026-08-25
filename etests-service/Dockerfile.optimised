@@ -1,0 +1,53 @@
+# Optimised variant of the stack-parser service.
+#
+# Same PHP daemon as etests-service/Dockerfile, but Maxima runs from STACK's *optimised image*
+# (a Lisp core with stackmaxima + libraries preloaded and saved). That removes the ~350ms/parse
+# spent reloading stackmaxima.mac on every plain Maxima start.
+#
+# STACK can only save such an image on GCL/SBCL/CLISP — NOT ECL (which conda-forge Maxima uses),
+# and NOT GCL (its unexec image segfaults under container ASLR). So we source-build Maxima against
+# SBCL here, then bake the optimised image at build time.
+#
+# Build from the REPO ROOT:
+#   docker build -f etests-service/Dockerfile.optimised -t etests-stack-parser:opt .
+
+FROM docker.io/library/ubuntu:noble-20260810
+LABEL org.opencontainers.image.description="etests stack-parser service (SBCL optimised Maxima)"
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        git build-essential ca-certificates curl bzip2 \
+        sbcl texinfo python3 python-is-python3 \
+        php-cli php-mbstring php-xml php-curl composer && \
+    rm -rf /var/lib/apt/lists/*
+
+# Source-build Maxima 5.44.0 against SBCL (so STACK can save an optimised image).
+RUN curl -Ls https://downloads.sourceforge.net/project/maxima/Maxima-source/5.44.0-source/maxima-5.44.0.tar.gz \
+        -o /tmp/maxima.tar.gz && \
+    mkdir -p /tmp/maxima && tar -xzf /tmp/maxima.tar.gz -C /tmp/maxima --strip-components=1 && \
+    cd /tmp/maxima && \
+    ./configure --enable-sbcl --prefix=/usr/local && \
+    make -j"$(nproc)" && make install && \
+    cd / && rm -rf /tmp/maxima /tmp/maxima.tar.gz && \
+    echo 'build_info();' | maxima --very-quiet | grep -i 'implementation type'
+
+COPY . /moodle-qtype_stack
+RUN cd /moodle-qtype_stack/api && composer install --no-interaction --no-progress
+
+# One-time (plain platform): create maximalocal.mac + smoke-test that "x" parses.
+RUN cd /moodle-qtype_stack/api/public && \
+    php -d disable_functions=locale_lookup init.php
+
+# One-time (plain platform): build the optimised image <dataroot>/stack/maxima_opt_auto and leave
+# maximalocal.mac in its optimised form. Fails the build if STACK can't save the image.
+RUN cd /moodle-qtype_stack/api/public && \
+    php -d disable_functions=locale_lookup build_optimage.php
+
+# From here on, run with the optimised platform (see api/config.php).
+ENV MAXIMA_OPTIMISED=1
+
+EXPOSE 8080
+CMD ["php", "-d", "disable_functions=locale_lookup", \
+     "-S", "0.0.0.0:8080", \
+     "/moodle-qtype_stack/etests-service/service-router.php"]

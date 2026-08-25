@@ -25,8 +25,15 @@ $CFG->dataurl = "http://localhost/";
 $CFG->maximacommand = 'maxima';
 $CFG->maximaversion = '5.44.0';
 // If you have compiled maxima yourself you will need to change this.
-$CFG->platform            = 'linux';
-//$CFG->maximacommandopt    = 'timeout --kill-after=10s 10s ' . $CFG->dataroot . '/stack/maxima_opt_auto';
+// When MAXIMA_OPTIMISED=1 (set by Dockerfile.optimised, which source-builds an SBCL Maxima and bakes
+// the optimised image at build time), start Maxima from the saved image instead of reloading
+// stackmaxima.mac on every call — cuts ~350ms/parse. Otherwise use the plain platform.
+if (getenv('MAXIMA_OPTIMISED') === '1') {
+    $CFG->platform         = 'linux-optimised';
+    $CFG->maximacommandopt = 'timeout --kill-after=30s 30s ' . $CFG->dataroot . '/stack/maxima_opt_auto';
+} else {
+    $CFG->platform         = 'linux';
+}
 //$CFG->maximacommandserver = getenv('MAXIMA_URL') ?: 'http://maxima:8080/maxima';
 /*
  * These settings are hard-wired here.  See settings.php for more details.
