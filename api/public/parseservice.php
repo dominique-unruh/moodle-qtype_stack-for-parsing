@@ -34,9 +34,16 @@ require(__DIR__ . '/../vendor/autoload.php');
 
 header('Content-Type: application/json');
 
+// One-liner request/result logging to the server console (process stdout). php://stdout
+// is separate from the HTTP response body under `php -S`, so this never pollutes the JSON.
+function parseservice_log(string $line): void {
+    file_put_contents('php://stdout', '[parse] ' . str_replace(["\r", "\n"], ' ', $line) . "\n");
+}
+
 $raw = file_get_contents('php://input');
 $body = json_decode($raw, true);
 if (!is_array($body) || !array_key_exists('expression', $body) || !array_key_exists('questionXml', $body)) {
+    parseservice_log('<- malformed request (missing "expression"/"questionXml")');
     http_response_code(400);
     echo json_encode(['error' => 'body must be JSON with "expression" and "questionXml"']);
     return;
@@ -45,16 +52,21 @@ if (!is_array($body) || !array_key_exists('expression', $body) || !array_key_exi
 $expression = $body['expression'];
 $xml = $body['questionXml'];
 
+parseservice_log('-> query: ' . $expression);
+
 try {
     $question = \api\util\StackQuestionLoader::loadxml($xml)['question'];
     $input = $question->inputs['ans1'];
     $options = $question->options;
     $state = $input->validate_student_response(['ans1' => $expression], $options, '', new stack_cas_security());
 } catch (\Throwable $e) {
+    parseservice_log('<- FAILED: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode(['error' => 'parse failed: ' . $e->getMessage()]);
     return;
 }
+
+parseservice_log($state->errors ? ('<- errors: ' . $state->errors) : '<- ok');
 
 echo json_encode([
     'result' => $state->contentsdisplayed,
