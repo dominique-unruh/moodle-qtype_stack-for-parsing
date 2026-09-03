@@ -31,6 +31,7 @@ require_once(__DIR__ . '/../../question.php');
 require_once(__DIR__ . '/../../stack/questiontest.php');
 require_once(__DIR__ . '/../../stack/potentialresponsetreestate.class.php');
 require(__DIR__ . '/../vendor/autoload.php');
+require_once(__DIR__ . '/../util/StackSeedHelper.php');
 
 header('Content-Type: application/json');
 
@@ -56,9 +57,15 @@ parseservice_log('-> query: ' . $expression);
 
 try {
     $question = \api\util\StackQuestionLoader::loadxml($xml)['question'];
-    $input = $question->inputs['ans1'];
-    $options = $question->options;
-    $state = $input->validate_student_response(['ans1' => $expression], $options, '', new stack_cas_security());
+    // Instantiate the question so its question variables are compiled and available to the input's
+    // validation — a bespoke `validator:` function is defined there, so validating the input in
+    // isolation (without instantiation) would leave the function undefined. get_input_state passes
+    // the compiled question variables into the input's validation (unlike a bare
+    // validate_student_response call).
+    \api\util\StackSeedHelper::initialize_seed($question, 0);
+    $question->initialise_question_from_seed();
+    $question->castextprocessor = new \castext2_qa_processor(new \stack_outofcontext_process());
+    $state = $question->get_input_state('ans1', ['ans1' => $expression]);
 } catch (\Throwable $e) {
     parseservice_log('<- FAILED: ' . $e->getMessage());
     http_response_code(500);
