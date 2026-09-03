@@ -1371,16 +1371,29 @@ abstract class stack_input {
                     } else {
                         $valid = false;
                         $errors[] = stack_string('inputvalidatorerrcouldnot');
+                        // Log the real cause: the validator did not return a string/list. Most often the
+                        // validator function is undefined (so it comes back as an unevaluated noun) — e.g.
+                        // because its name is not lowercase (STACK lowercases identifiers).
+                        error_log('[stack validator] option "' . ($this->extraoptions['validator'] ?? '')
+                            . '" on input "' . $this->name . '" did not return a string; got: '
+                            . $additionalvars['validator']->get_value()
+                            . ' (is the validator function defined, with a lowercase name?)');
                     }
                 }
             } else {
                 $valid = false;
                 $errors[] = stack_string('inputvalidatorerrcouldnot');
+                error_log('[stack validator] option "' . ($this->extraoptions['validator'] ?? '')
+                    . '" on input "' . $this->name . '" failed to evaluate; value: '
+                    . $additionalvars['validator']->get_value()
+                    . ' errors: ' . $additionalvars['validator']->get_errors());
             }
             $rnerr = $additionalvars['validator']->get_errors();
             if (trim($rnerr) != '') {
                 $valid = false;
                 $errors[] = stack_string('inputvalidatorerrors', ['err' => $rnerr]);
+                error_log('[stack validator] option "' . ($this->extraoptions['validator'] ?? '')
+                    . '" on input "' . $this->name . '" returned Maxima errors: ' . $rnerr);
             }
         }
 
